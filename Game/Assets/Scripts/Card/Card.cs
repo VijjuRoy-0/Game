@@ -32,11 +32,13 @@ public class Card : MonoBehaviour
     {
         isFlipped=true;
         backImage.gameObject.SetActive(false);
+        StartCoroutine(FlipAnimation(true));
     }
     public void FlipBack()
     {
         isFlipped=false;
         backImage.gameObject.SetActive(true);
+        StartCoroutine(FlipAnimation(false));
     }
     public void SetMatched()
     {
@@ -59,5 +61,33 @@ public class Card : MonoBehaviour
         }
 
         group.alpha = 0f;
+    }
+
+    IEnumerator FlipAnimation(bool showFront)
+    {
+        float time = 0f;
+        float duration = 0.3f;
+        Quaternion start = transform.rotation;
+        Quaternion mid = Quaternion.Euler(0, 90f, 0);
+        Quaternion end = showFront? Quaternion.Euler(0,0,0) : Quaternion.Euler(0,180f,0);
+       
+        while (time < duration/2)
+        {
+            transform.rotation = Quaternion.Slerp(start, mid, (time/(duration/2)));
+            time += Time.deltaTime;
+            yield return null;
+        }
+        frontImage.gameObject.SetActive(showFront);
+        backImage.gameObject.SetActive(!showFront);
+
+        time = 0f;
+
+        while(time < duration / 2)
+        {
+            transform.rotation = Quaternion.Slerp(mid,end, (time/(duration/2)));
+            time += Time.deltaTime;
+            yield return null;
+        }
+        transform.rotation = end;
     }
 }
