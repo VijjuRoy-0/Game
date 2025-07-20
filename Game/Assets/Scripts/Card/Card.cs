@@ -19,7 +19,15 @@ public class Card : MonoBehaviour
         frontImage.sprite = faceSprite;
         isFlipped = false;
         isMatched = false;
-        backImage.gameObject.SetActive(true);
+        // Reset visibility
+        frontImage.canvasRenderer.SetAlpha(0f);
+        backImage.canvasRenderer.SetAlpha(1f);
+
+        // Reset interaction
+        GetComponent<Button>().interactable = true;
+
+        // Reset rotation
+        transform.rotation = Quaternion.Euler(0f, 180f, 0f);
     }
     public void OnCardClicked()
     {
@@ -31,14 +39,18 @@ public class Card : MonoBehaviour
     public void FlipCard()
     {
         isFlipped=true;
-        backImage.gameObject.SetActive(false);
+        GetComponent<Button>().interactable = false;
         StartCoroutine(FlipAnimation(true));
+        backImage.gameObject.SetActive(false);
+      
     }
     public void FlipBack()
     {
         isFlipped=false;
-        backImage.gameObject.SetActive(true);
+        GetComponent<Button>().interactable = false;
         StartCoroutine(FlipAnimation(false));
+        backImage.gameObject.SetActive(true);
+        
     }
     public void SetMatched()
     {
@@ -63,10 +75,10 @@ public class Card : MonoBehaviour
         group.alpha = 0f;
     }
 
-    IEnumerator FlipAnimation(bool showFront)
+    IEnumerator FlipAnimation(bool showFront, float duration = 0.3f)
     {
         float time = 0f;
-        float duration = 0.3f;
+       
         Quaternion start = transform.rotation;
         Quaternion mid = Quaternion.Euler(0, 90f, 0);
         Quaternion end = showFront? Quaternion.Euler(0,0,0) : Quaternion.Euler(0,180f,0);
@@ -77,17 +89,28 @@ public class Card : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
-        frontImage.gameObject.SetActive(showFront);
-        backImage.gameObject.SetActive(!showFront);
+        if (showFront)
+        {
+            frontImage.canvasRenderer.SetAlpha(1f);
+            backImage.canvasRenderer.SetAlpha(0f);
+        }
+        else
+        {
+            frontImage.canvasRenderer.SetAlpha(0f);
+            backImage.canvasRenderer.SetAlpha(1f);
+        }
 
         time = 0f;
 
-        while(time < duration / 2)
+        while (time < duration / 2)
         {
             transform.rotation = Quaternion.Slerp(mid,end, (time/(duration/2)));
             time += Time.deltaTime;
             yield return null;
         }
         transform.rotation = end;
+       
+        if (!isMatched)
+            GetComponent<Button>().interactable = true;
     }
 }
