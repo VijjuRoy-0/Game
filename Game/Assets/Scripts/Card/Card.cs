@@ -12,50 +12,51 @@ public class Card : MonoBehaviour
 
     private bool isFlipped = false;
     private bool isMatched = false;
+    private Button cardButton;
 
+    private void Awake()
+    {
+        cardButton = GetComponent<Button>();
+        cardButton.onClick.AddListener(OnCardClicked);
+    }
     public void Initialize(Sprite faceSprite, int id)
     {
         cardId = id;
         frontImage.sprite = faceSprite;
         isFlipped = false;
         isMatched = false;
-        // Reset visibility
-        frontImage.canvasRenderer.SetAlpha(0f);
-        backImage.canvasRenderer.SetAlpha(1f);
-
-        // Reset interaction
-        GetComponent<Button>().interactable = true;
-
-        // Reset rotation
-        transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        backImage.gameObject.SetActive(true);
+        cardButton.interactable = true;
     }
     public void OnCardClicked()
     {
-        if (isFlipped || isMatched) return;
+        Debug.Log("Card Clicked: ID " + cardId);
+        if (GameManager.instance.isChecking || isFlipped || isMatched) return;
 
         FlipCard();
         GameManager.instance.OnCardFlipped(this);
     }
     public void FlipCard()
     {
-        isFlipped=true;
-        GetComponent<Button>().interactable = false;
-        StartCoroutine(FlipAnimation(true));
+        isFlipped = true;
+        cardButton.interactable = false;
+
         backImage.gameObject.SetActive(false);
-      
+        StartCoroutine(FlipAnimation(true));
     }
     public void FlipBack()
     {
-        isFlipped=false;
-        GetComponent<Button>().interactable = false;
-        StartCoroutine(FlipAnimation(false));
-        backImage.gameObject.SetActive(true);
+        isFlipped = false;
         
+        backImage.gameObject.SetActive(true);
+        StartCoroutine(FlipAnimation(false));
+
+        cardButton.interactable = true;
     }
     public void SetMatched()
     {
-        isMatched=true;
-        GetComponent<Button>().interactable = false;
+        isMatched = true;
+        cardButton.interactable = false;
 
         StartCoroutine(FadeOut());
     }
@@ -75,42 +76,31 @@ public class Card : MonoBehaviour
         group.alpha = 0f;
     }
 
-    IEnumerator FlipAnimation(bool showFront, float duration = 0.3f)
+    IEnumerator FlipAnimation(bool showFront)
     {
         float time = 0f;
-       
+        float duration = 0.3f;
         Quaternion start = transform.rotation;
         Quaternion mid = Quaternion.Euler(0, 90f, 0);
-        Quaternion end = showFront? Quaternion.Euler(0,0,0) : Quaternion.Euler(0,180f,0);
-       
-        while (time < duration/2)
+        Quaternion end = showFront ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180f, 0);
+
+        while (time < duration / 2)
         {
-            transform.rotation = Quaternion.Slerp(start, mid, (time/(duration/2)));
+            transform.rotation = Quaternion.Slerp(start, mid, (time / (duration / 2)));
             time += Time.deltaTime;
             yield return null;
         }
-        if (showFront)
-        {
-            frontImage.canvasRenderer.SetAlpha(1f);
-            backImage.canvasRenderer.SetAlpha(0f);
-        }
-        else
-        {
-            frontImage.canvasRenderer.SetAlpha(0f);
-            backImage.canvasRenderer.SetAlpha(1f);
-        }
+        frontImage.gameObject.SetActive(showFront);
+        backImage.gameObject.SetActive(!showFront);
 
         time = 0f;
 
         while (time < duration / 2)
         {
-            transform.rotation = Quaternion.Slerp(mid,end, (time/(duration/2)));
+            transform.rotation = Quaternion.Slerp(mid, end, (time / (duration / 2)));
             time += Time.deltaTime;
             yield return null;
         }
         transform.rotation = end;
-       
-        if (!isMatched)
-            GetComponent<Button>().interactable = true;
     }
 }
