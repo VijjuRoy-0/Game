@@ -14,6 +14,8 @@ public class Card : MonoBehaviour
     private bool isMatched = false;
     private Button cardButton;
 
+    public Transform visualRoot;
+
     private void Awake()
     {
         cardButton = GetComponent<Button>();
@@ -80,13 +82,13 @@ public class Card : MonoBehaviour
     {
         float time = 0f;
         float duration = 0.3f;
-        Quaternion start = transform.rotation;
+        Quaternion start = visualRoot.rotation;
         Quaternion mid = Quaternion.Euler(0, 90f, 0);
         Quaternion end = showFront ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180f, 0);
 
         while (time < duration / 2)
         {
-            transform.rotation = Quaternion.Slerp(start, mid, (time / (duration / 2)));
+            visualRoot.rotation = Quaternion.Slerp(start, mid, (time / (duration / 2)));
             time += Time.deltaTime;
             yield return null;
         }
@@ -97,10 +99,13 @@ public class Card : MonoBehaviour
 
         while (time < duration / 2)
         {
-            transform.rotation = Quaternion.Slerp(mid, end, (time / (duration / 2)));
+            visualRoot.rotation = Quaternion.Slerp(mid, end, (time / (duration / 2)));
             time += Time.deltaTime;
             yield return null;
         }
-        transform.rotation = end;
+         visualRoot.rotation = end;
+
+        if(!isMatched)
+            cardButton.interactable=true;
     }
 }
