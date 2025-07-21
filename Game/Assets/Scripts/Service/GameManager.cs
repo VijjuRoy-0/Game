@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour
 
     public bool isChecking = false;
 
+    public int rows;
+    public int cols;
+
     private void Awake()
     {
         if (Instance == null)
@@ -27,7 +30,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        GenerateBoard(2, 2);
+        GenerateBoard(rows, cols);
     }
     public void GenerateBoard(int rows, int columns)
     {

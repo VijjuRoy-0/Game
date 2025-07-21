@@ -333,6 +333,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 3ba418a6acc40f54a8218ef8944165d5, type: 3}
   - {fileID: 21300000, guid: ae343e68c7cff224cad5c6e5bd2f660b, type: 3}
   isChecking: 0
+  rows: 4
+  cols: 3
 --- !u!114 &468973737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -352,7 +354,7 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 4
   m_StartCorner: 1
-  m_StartAxis: 0
+  m_StartAxis: 1
   m_CellSize: {x: 100, y: 100}
   m_Spacing: {x: 20, y: 20}
   m_Constraint: 0
