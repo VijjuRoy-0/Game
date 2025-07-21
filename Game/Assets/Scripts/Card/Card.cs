@@ -12,7 +12,15 @@ public class Card : MonoBehaviour
 
     private bool isFlipped = false;
     private bool isMatched = false;
+    private Button cardButton;
 
+    public Transform visualRoot;
+
+    private void Awake()
+    {
+        cardButton = GetComponent<Button>();
+        cardButton.onClick.AddListener(OnCardClicked);
+    }
     public void Initialize(Sprite faceSprite, int id)
     {
         cardId = id;
@@ -20,28 +28,37 @@ public class Card : MonoBehaviour
         isFlipped = false;
         isMatched = false;
         backImage.gameObject.SetActive(true);
+        cardButton.interactable = true;
     }
     public void OnCardClicked()
     {
-        if (isFlipped || isMatched) return;
+        Debug.Log("Card Clicked: ID " + cardId);
+        if (GameManager.instance.isChecking || isFlipped || isMatched) return;
 
         FlipCard();
         GameManager.instance.OnCardFlipped(this);
     }
     public void FlipCard()
     {
-        isFlipped=true;
+        isFlipped = true;
+        cardButton.interactable = false;
+
         backImage.gameObject.SetActive(false);
+        StartCoroutine(FlipAnimation(true));
     }
     public void FlipBack()
     {
-        isFlipped=false;
+        isFlipped = false;
+        
         backImage.gameObject.SetActive(true);
+        StartCoroutine(FlipAnimation(false));
+
+        cardButton.interactable = true;
     }
     public void SetMatched()
     {
-        isMatched=true;
-        GetComponent<Button>().interactable = false;
+        isMatched = true;
+        cardButton.interactable = false;
 
         StartCoroutine(FadeOut());
     }
@@ -59,5 +76,36 @@ public class Card : MonoBehaviour
         }
 
         group.alpha = 0f;
+    }
+
+    IEnumerator FlipAnimation(bool showFront)
+    {
+        float time = 0f;
+        float duration = 0.3f;
+        Quaternion start = visualRoot.rotation;
+        Quaternion mid = Quaternion.Euler(0, 90f, 0);
+        Quaternion end = showFront ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180f, 0);
+
+        while (time < duration / 2)
+        {
+            visualRoot.rotation = Quaternion.Slerp(start, mid, (time / (duration / 2)));
+            time += Time.deltaTime;
+            yield return null;
+        }
+        frontImage.gameObject.SetActive(showFront);
+        backImage.gameObject.SetActive(!showFront);
+
+        time = 0f;
+
+        while (time < duration / 2)
+        {
+            visualRoot.rotation = Quaternion.Slerp(mid, end, (time / (duration / 2)));
+            time += Time.deltaTime;
+            yield return null;
+        }
+         visualRoot.rotation = end;
+
+        if(!isMatched)
+            cardButton.interactable=true;
     }
 }

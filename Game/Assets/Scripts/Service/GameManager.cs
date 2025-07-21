@@ -16,6 +16,11 @@ public class GameManager : MonoBehaviour
     private List<Card> flippedCards = new List<Card>();
     private List<int> cardIds = new List<int>();
 
+    public bool isChecking = false;
+
+    public int rows;
+    public int cols;
+
     private void Awake()
     {
         if (Instance == null)
@@ -25,7 +30,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        GenerateBoard(6, 6);
+        GenerateBoard(rows, cols);
     }
     public void GenerateBoard(int rows, int columns)
     {
@@ -65,6 +70,7 @@ public class GameManager : MonoBehaviour
 
         if (flippedCards.Count == 2)
         {
+            isChecking = true;
             StartCoroutine(CheckMatch());
            
         }
@@ -86,6 +92,7 @@ public class GameManager : MonoBehaviour
         }
 
         flippedCards.Clear();
+        isChecking = false;
     }
 
     
