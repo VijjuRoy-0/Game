@@ -37,7 +37,19 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        GenerateBoard(rows, cols);
+        if (PlayerPrefs.HasKey("Rows") && PlayerPrefs.HasKey("Cols"))
+        {
+            rows = PlayerPrefs.GetInt("Rows");
+            cols = PlayerPrefs.GetInt("Cols");
+        }
+        if (PlayerPrefs.HasKey("SaveData"))
+        {
+            LoadGame();
+        }
+        else
+        {
+            GenerateBoard(rows, cols);
+        }
     }
     public void GenerateBoard(int rows, int columns)
     {
@@ -101,8 +113,9 @@ public class GameManager : MonoBehaviour
 
         flippedCards.Clear();
         isChecking = false;
+        SaveGame();
     }
-    private IEnumerator SetupBoardCoroutine(int numRows, int numCols, int totalCards)
+    private IEnumerator SetupBoardCoroutine(int numRows, int numCols, int totalCards, List<int> preMatched = null)
     {
         // Wait for one frame to ensure the container's size is correctly updated by the layout system
         yield return new WaitForEndOfFrame(); ; // Wait one frame for layout to be ready
@@ -133,8 +146,51 @@ public class GameManager : MonoBehaviour
             GameObject cardObj = Instantiate(cardPrefab, gridParent);
             Card card = cardObj.GetComponent<Card>();
             card.Initialize(cardSprite[cardIds[i]], cardIds[i]);
+
+            if (preMatched != null && preMatched.Contains(card.cardId))
+                card.SetMatchedImmediately();
         }
+    }
+    public void SaveGame()
+    {
+        SaveData data = new SaveData
+        {
+            rows = rows,
+            cols = cols,
+            cardIdOrder = new List<int>(cardIds),
+            matchedCardIds = new List<int>()
+        };
+
+        foreach (Card card in FindObjectsOfType<Card>())
+        {
+            if (card.IsMatched())
+                data.matchedCardIds.Add(card.cardId);
+        }
+
+        string json = JsonUtility.ToJson(data);
+        PlayerPrefs.SetString("SaveData", json);
+        PlayerPrefs.Save();
+    }
+
+    public void LoadGame()
+    {
+        string json = PlayerPrefs.GetString("SaveData");
+        SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+        rows = data.rows;
+        cols = data.cols;
+        cardIds = new List<int>(data.cardIdOrder);
+
+        StartCoroutine(SetupBoardCoroutine(rows, cols, rows * cols, data.matchedCardIds));
     }
 
 
+}
+[System.Serializable]
+public class SaveData
+{
+    public int rows;
+    public int cols;
+    public List<int> cardIdOrder;       // the shuffled list
+    public List<int> matchedCardIds;    // cards that are already matched
 }

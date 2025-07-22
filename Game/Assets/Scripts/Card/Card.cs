@@ -108,4 +108,16 @@ public class Card : MonoBehaviour
         if(!isMatched)
             cardButton.interactable=true;
     }
+    public bool IsMatched() => isMatched;
+
+    public void SetMatchedImmediately()
+    {
+        isMatched = true;
+        backImage.gameObject.SetActive(false);
+        frontImage.canvasRenderer.SetAlpha(1f);
+        GetComponent<Button>().interactable = false;
+
+        CanvasGroup group = GetComponent<CanvasGroup>();
+        if (group != null) group.alpha = 0f;
+    }
 }
