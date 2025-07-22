@@ -22,6 +22,9 @@ public class GameManager : MonoBehaviour
     public int rows;
     public int cols;
 
+    private int score = 0;
+    private int combo = 0;
+
     private GridLayoutGroup gridLayoutGroup;
     private void Awake()
     {
@@ -50,6 +53,10 @@ public class GameManager : MonoBehaviour
         {
             GenerateBoard(rows, cols);
         }
+
+        score = 0;
+        combo   = 0;
+       ScoreManament.instance.UpdateScore(score, combo);
     }
     public void GenerateBoard(int rows, int columns)
     {
@@ -103,14 +110,16 @@ public class GameManager : MonoBehaviour
         {
             flippedCards[0].SetMatched();
             flippedCards[1].SetMatched();
-             
+            combo++;
+            score += 10+(combo - 1) * 5;
         }
         else
         {
             flippedCards[0].FlipBack();
             flippedCards[1].FlipBack();
+            combo = 0;
         }
-
+        ScoreManament.instance.UpdateScore(score,combo);
         flippedCards.Clear();
         isChecking = false;
         SaveGame();
