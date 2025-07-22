@@ -51,12 +51,12 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            score = 0;
+            combo = 0;
             GenerateBoard(rows, cols);
+            ScoreManament.instance.UpdateScore(score, combo);
         }
-
-        score = 0;
-        combo   = 0;
-       ScoreManament.instance.UpdateScore(score, combo);
+       
     }
     public void GenerateBoard(int rows, int columns)
     {
@@ -120,6 +120,7 @@ public class GameManager : MonoBehaviour
             combo = 0;
         }
         ScoreManament.instance.UpdateScore(score,combo);
+        
         flippedCards.Clear();
         isChecking = false;
         SaveGame();
@@ -167,7 +168,9 @@ public class GameManager : MonoBehaviour
             rows = rows,
             cols = cols,
             cardIdOrder = new List<int>(cardIds),
-            matchedCardIds = new List<int>()
+            matchedCardIds = new List<int>(),
+            _score = score,
+            _comboCount = combo
         };
 
         foreach (Card card in FindObjectsOfType<Card>())
@@ -189,7 +192,9 @@ public class GameManager : MonoBehaviour
         rows = data.rows;
         cols = data.cols;
         cardIds = new List<int>(data.cardIdOrder);
-
+        score = data._score;
+        combo = data._comboCount;
+        ScoreManament.instance.UpdateScore(score, combo);
         StartCoroutine(SetupBoardCoroutine(rows, cols, rows * cols, data.matchedCardIds));
     }
 
@@ -202,4 +207,6 @@ public class SaveData
     public int cols;
     public List<int> cardIdOrder;       // the shuffled list
     public List<int> matchedCardIds;    // cards that are already matched
+    public int _score;
+    public int _comboCount;
 }
