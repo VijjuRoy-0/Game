@@ -6,9 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    private static UIManager Instance;
-    public static UIManager instance {  get { return Instance; } }
-
     public GameObject menu;
     public TextMeshProUGUI popupText;
     public TMP_Dropdown dropdown;
@@ -30,9 +27,15 @@ public class UIManager : MonoBehaviour
         {
             case 0: PlayerPrefs.SetInt("Rows", 2); PlayerPrefs.SetInt("Cols", 2);
                 break;
-            case 1: PlayerPrefs.SetInt("Rows", 4); PlayerPrefs.SetInt("Cols", 4);
+            case 1: PlayerPrefs.SetInt("Rows", 2); PlayerPrefs.SetInt("Cols", 4);
                 break;
-            case 2: PlayerPrefs.SetInt("Rows", 6); PlayerPrefs.SetInt("Cols", 6); 
+            case 2: PlayerPrefs.SetInt("Rows", 3); PlayerPrefs.SetInt("Cols", 4); 
+                break;
+            case 3: PlayerPrefs.SetInt("Rows", 4); PlayerPrefs.SetInt("Cols", 4);
+                break;
+            case 4: PlayerPrefs.SetInt("Rows", 4); PlayerPrefs.SetInt("Cols", 5);
+                break;
+            case 5: PlayerPrefs.SetInt("Rows", 5); PlayerPrefs.SetInt("Cols", 6);
                 break;
         }
         SceneManager.LoadScene(1);

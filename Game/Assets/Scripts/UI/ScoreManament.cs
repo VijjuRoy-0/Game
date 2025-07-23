@@ -16,6 +16,10 @@ public class ScoreManament : MonoBehaviour
         {
             Instance = this;
         }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Start()

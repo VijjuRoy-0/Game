@@ -112,15 +112,18 @@ public class GameManager : MonoBehaviour
             flippedCards[1].SetMatched();
             combo++;
             score += 10+(combo - 1) * 5;
+            SoundManager.Instance.MatchSound();
         }
         else
         {
             flippedCards[0].FlipBack();
             flippedCards[1].FlipBack();
             combo = 0;
+            SoundManager.Instance.MisMatchSound();
         }
         if (AllCardMatched())
         {
+            SoundManager.Instance.GameOverSound();
             UIManage.Instance.endPanel.SetActive(true);
         }
         ScoreManament.instance.UpdateScore(score,combo);
