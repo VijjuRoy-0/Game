@@ -121,16 +121,27 @@ public class GameManager : MonoBehaviour
             combo = 0;
             SoundManager.Instance.MisMatchSound();
         }
+
+        flippedCards.Clear();
+        isChecking = false;
+
         if (AllCardMatched())
         {
             SoundManager.Instance.GameOverSound();
+
+            PlayerPrefs.DeleteKey("SaveData");
+            PlayerPrefs.Save();
+
             UIManage.Instance.endPanel.SetActive(true);
+        }
+        else
+        {
+            SaveGame();
         }
         ScoreManament.instance.UpdateScore(score,combo);
         
-        flippedCards.Clear();
-        isChecking = false;
-        SaveGame();
+       
+       
     }
     private IEnumerator SetupBoardCoroutine(int numRows, int numCols, int totalCards, List<int> preMatched = null)
     {
