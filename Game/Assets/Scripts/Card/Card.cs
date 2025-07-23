@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
+    private static Card instance;
+    public static Card Instance {  get { return instance; } }
     public int cardId;
 
     public Image backImage;
@@ -18,6 +20,11 @@ public class Card : MonoBehaviour
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+
         cardButton = GetComponent<Button>();
         cardButton.onClick.AddListener(OnCardClicked);
     }
@@ -107,5 +114,17 @@ public class Card : MonoBehaviour
 
         if(!isMatched)
             cardButton.interactable=true;
+    }
+    public bool IsMatched() => isMatched;
+
+    public void SetMatchedImmediately()
+    {
+        isMatched = true;
+        backImage.gameObject.SetActive(false);
+        frontImage.canvasRenderer.SetAlpha(1f);
+        GetComponent<Button>().interactable = false;
+
+        CanvasGroup group = GetComponent<CanvasGroup>();
+        if (group != null) group.alpha = 0f;
     }
 }
