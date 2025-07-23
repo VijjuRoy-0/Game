@@ -17,6 +17,10 @@ public class UIManage : MonoBehaviour
         {
             instance = this;
         }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
     void Start()
     {

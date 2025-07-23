@@ -6,9 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    private static UIManager Instance;
-    public static UIManager instance {  get { return Instance; } }
-
     public GameObject menu;
     public TextMeshProUGUI popupText;
     public TMP_Dropdown dropdown;
