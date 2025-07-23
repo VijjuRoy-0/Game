@@ -167,6 +167,7 @@ public class GameManager : MonoBehaviour
             if (preMatched != null && preMatched.Contains(card.cardId))
                 card.SetMatchedImmediately();
         }
+        StartCoroutine(RevealAndHideCards());
     }
     public void SaveGame()
     {
@@ -214,6 +215,24 @@ public class GameManager : MonoBehaviour
             }
         }
         return true;
+    }
+    private IEnumerator RevealAndHideCards()
+    {
+        List<Card> allCards = new List<Card>(FindObjectsOfType<Card>());
+
+        // Show all front sides
+        foreach (Card card in allCards)
+        {
+            card.ForceShowFront();
+        }
+
+        yield return new WaitForSeconds(1.5f); // Wait for 1 second
+
+        // Flip them all back
+        foreach (Card card in allCards)
+        {
+            card.ForceHideFront(); // Custom instant back flip (not animation)
+        }
     }
 
 }

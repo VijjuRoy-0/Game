@@ -98,6 +98,9 @@ public class Card : MonoBehaviour
         frontImage.gameObject.SetActive(showFront);
         backImage.gameObject.SetActive(!showFront);
 
+        frontImage.canvasRenderer.SetAlpha(showFront ? 1f : 0f);
+        backImage.canvasRenderer.SetAlpha(showFront ? 0f : 1f);
+
         time = 0f;
 
         while (time < duration / 2)
@@ -122,5 +125,23 @@ public class Card : MonoBehaviour
 
         CanvasGroup group = GetComponent<CanvasGroup>();
         if (group != null) group.alpha = 0f;
+    }
+    public void ForceShowFront()
+    {
+        isFlipped = true;
+        backImage.gameObject.SetActive(false);
+        frontImage.canvasRenderer.SetAlpha(1f);
+        backImage.canvasRenderer.SetAlpha(0f);
+        Debug.Log("show front");
+    }
+
+    public void ForceHideFront()
+    {
+        isFlipped = false;
+        backImage.gameObject.SetActive(true);
+        frontImage.canvasRenderer.SetAlpha(0f);
+        backImage.canvasRenderer.SetAlpha(1f);
+        GetComponent<Button>().interactable = true;
+        Debug.Log("hide front");
     }
 }
