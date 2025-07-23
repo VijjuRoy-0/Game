@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
+    private static Card instance;
+    public static Card Instance {  get { return instance; } }
     public int cardId;
 
     public Image backImage;
@@ -18,6 +20,11 @@ public class Card : MonoBehaviour
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+
         cardButton = GetComponent<Button>();
         cardButton.onClick.AddListener(OnCardClicked);
     }

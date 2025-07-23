@@ -5,10 +5,23 @@ using UnityEngine.SceneManagement;
 
 public class UIManage : MonoBehaviour
 {
+    private static UIManage instance;
+    public static UIManage Instance {  get { return instance; } }
+
     public GameObject pausePanel;
+    public GameObject endPanel;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
     void Start()
     {
         pausePanel.SetActive(false);
+        endPanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -20,6 +33,11 @@ public class UIManage : MonoBehaviour
     {
         pausePanel.SetActive(false);
         Time.timeScale = 1;
+    }
+    public void Restart()
+    {
+        PlayerPrefs.DeleteKey("SaveData");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     public void Back()
     {

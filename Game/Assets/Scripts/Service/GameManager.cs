@@ -119,6 +119,10 @@ public class GameManager : MonoBehaviour
             flippedCards[1].FlipBack();
             combo = 0;
         }
+        if (AllCardMatched())
+        {
+            UIManage.Instance.endPanel.SetActive(true);
+        }
         ScoreManament.instance.UpdateScore(score,combo);
         
         flippedCards.Clear();
@@ -197,7 +201,17 @@ public class GameManager : MonoBehaviour
         ScoreManament.instance.UpdateScore(score, combo);
         StartCoroutine(SetupBoardCoroutine(rows, cols, rows * cols, data.matchedCardIds));
     }
-
+    bool AllCardMatched()
+    {
+        foreach (Card card in FindObjectsOfType<Card>())
+        {
+            if (!card.IsMatched())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
 [System.Serializable]
