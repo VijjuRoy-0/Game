@@ -2519,9 +2519,15 @@ MonoBehaviour:
     m_Options:
     - m_Text: 2x2
       m_Image: {fileID: 0}
+    - m_Text: 2x4
+      m_Image: {fileID: 0}
+    - m_Text: 3x4
+      m_Image: {fileID: 0}
     - m_Text: 4x4
       m_Image: {fileID: 0}
-    - m_Text: 6x6
+    - m_Text: 4x5
+      m_Image: {fileID: 0}
+    - m_Text: 5x6
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
